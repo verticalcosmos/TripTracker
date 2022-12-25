@@ -1,0 +1,136 @@
+@import 'trip.scss';
+@import 'form.scss';
+@import url('https://fonts.googleapis.com/css2?family=Unbounded:wght@200;300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@100;300;500;700&family=Unbounded:wght@200;300;400;500;600;700&display=swap');
+
+
+
+
+html, body, div, span {
+	margin: 0;
+	padding: 0;
+	border: 0;
+}
+
+
+* {
+	box-sizing: border-box;
+}
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+header {
+    position: absolute;
+    top: 20px;
+    left: 50px;
+    z-index: 10;
+    background-color: transparent;
+}
+
+button {
+    outline: none;
+    border: none;
+}
+
+
+
+
+.mainContainer {
+    height: 100vh;
+    width: 100vw;
+    background-color: black;
+    overflow: hidden;
+}
+
+.addTripWrapper {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    & h2 {
+    color: #fff;
+        text-align: center;
+        font-size: 5em;
+        margin-bottom: 50px;
+    }
+    & button {
+        color: #fff;
+        border: 1px solid #fff;
+        background-color: transparent;
+        width: 60%;
+        font-size: 2em;
+        font-weight: 700;
+        padding: 0.3em;
+        cursor: pointer;
+        font-family: 'Roboto';
+        &:hover {
+            background-color: rgb(0, 132, 255);
+            color: var(--blue_purple);
+        }
+    }
+}
+
+.inputPage {
+    background-color: #000;
+    opacity: 0.5;
+    z-index: 3;
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100vw;
+}
+
+
+
+
+.container {
+    padding: 0 12vw;
+    display: flex;
+    &.active {
+        padding: 0;
+        display: block;
+    }
+}
+
+.header-container {
+    justify-content: space-between;
+    position: fixed;
+    z-index: 5;
+    width: 100%;
+    margin-top: 2.5vh;
+}
+
+
+
+
+/* Typography */
+
+h1 {
+    font-family: 'Unbounded', sans-serif;
+    color: white;
+    font-weight: 300;
+    font-size: 1.5rem;
+}
+
+body,
+h2,
+h3,
+h4,
+p {
+    margin: 0;
+    padding: 0;
+    font-family: 'Montserrat', sans-serif;
+    color: white;
+}
+
+
+span {
+    color: rgb(0, 132, 255);
+    font-weight: 900;
+}
