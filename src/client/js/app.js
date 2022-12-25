@@ -22,7 +22,7 @@ const addTrip = () => {
 };
 
 
-// App function
+// App function to run the addTrip function
 const app = () => {
   const button = document.getElementById('mainBtn')
   button.addEventListener('click', addTrip);
