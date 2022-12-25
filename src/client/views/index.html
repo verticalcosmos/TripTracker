@@ -19,6 +19,19 @@
       <button class="mainAddTripBtn" id="mainBtn">Add trip</button>
     </div>
   </div>
+  
+    <script>
+       if ('serviceWorker' in navigator) {
+         window.addEventListener('load', () => {
+           navigator.serviceWorker.register('/service-worker.js').then(registration =>{
+             console.log('SW registered successfuly: ', registration);
+             });
+            });
+          }else{
+          console.log("Service Working not supported");
+        }
+    </script>
+  
+  
 </body>
-
 </html>
