@@ -240,7 +240,7 @@ const inputForm = () => {
     document.body.removeChild(document.querySelector('.formContainer'));
   });
 
-  // From main text
+  // Form's main text
   const formHeader = document.createElement('h2');
   formHeader.innerText = 'Choose your destination and date of departure';
   form.appendChild(formHeader);
