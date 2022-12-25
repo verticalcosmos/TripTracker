@@ -3,7 +3,7 @@ const fetch = require('node-fetch');
 
 // Get data from APIs
 
-const geonames = async (val, key) => {
+const getLocation = async (val, key) => {
   const options = `maxRows=5&fuzzy=1&username=${key}`;
   const response = await fetch(`http://api.geonames.org/searchJSON?q=&name_startsWith=${val}&${options}`);
   const data = await response.json();
@@ -51,7 +51,7 @@ const gethWeather = async (trip, days, key) => {
 };
 
 module.exports = {
-  geonames,
+  getLocation,
   getImage,
   gethWeather,
 };
