@@ -24,7 +24,6 @@ const addTrip = () => {
 
 // App function
 const app = () => {
-  const errorwrapper = document.querySelector(".addTripWrapper")
   const button = document.getElementById('mainBtn')
   button.addEventListener('click', addTrip);
 
