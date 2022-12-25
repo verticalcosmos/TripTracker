@@ -22,7 +22,7 @@ const addTrip = () => {
 };
 
 
-// make this part into html
+// App run
 const app = () => {
   const errorwrapper = document.querySelector(".addTripWrapper")
   const button = document.getElementById('mainBtn')
