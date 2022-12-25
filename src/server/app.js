@@ -29,7 +29,7 @@ app.get('/', (_req, res) => {
 
 // post requests from geonames
 app.post('/api/coordination', (req, res) => {
-  apiCalls.geonames(req.body.val, process.env.GEONAME_KEY)
+  apiCalls.getLocation(req.body.val, process.env.GEONAME_KEY)
     .then((data) => res.send(data));
 });
 
