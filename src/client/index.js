@@ -1,6 +1,5 @@
 import './styles/main.scss';
 import './js/memory';
-import './js/serviceWorkerRegistration';
 import app from './js/app';
 import showTrips from './js/showTrips';
 
