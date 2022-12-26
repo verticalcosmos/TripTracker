@@ -3,14 +3,13 @@ import './js/memory';
 import app from './js/app';
 import showTrips from './js/showTrips';
 
-// Checks if there are any trips in the storage
+// if there are trips in memory show trips if not add trip
 if (!localStorage.getObjectItem('trips') || localStorage.getObjectItem('trips').length < 1) {
-  // If no trips in storage, go to app page
   localStorage.setObjectItem('trips', []);
   app();
-} else {
+  } else {
   showTrips();
-}
+  }
 
 if (module.hot) {
   module.hot.accept();
