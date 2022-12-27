@@ -1,8 +1,8 @@
 import pinIcon from '../img/icon.png';
 
 //managing date input
-const dateHandler = (event) => {
-  document.querySelector('.dateError').innerText = '';
+const dateInputHandler = (event) => {
+  document.querySelector('.date-input-error').innerText = '';
   const date = event.target.value.split('-');
   const updatedTrips = localStorage.getObjectItem('trips');
   const departure = {
@@ -14,15 +14,17 @@ const dateHandler = (event) => {
   localStorage.setObjectItem('trips', updatedTrips);
 };
 
+
 // Add trip to memory
 const addTripToMemory = (trip) => {
-  const allTrips = localStorage.getObjectItem('trips');
-  allTrips.push(trip);
-  localStorage.setObjectItem('trips', allTrips);
+  const arrayOfTrips = localStorage.getObjectItem('trips');
+  arrayOfTrips.push(trip);
+  localStorage.setObjectItem('trips', arrayOfTrips);
 };
 
+
 // Get location data
-const getLocation = async (val) => {
+const fetchLocation = async (val) => {
   const response = await fetch('/api/coordination', {
     method: 'POST',
     credentials: 'same-origin',
@@ -37,7 +39,7 @@ const getLocation = async (val) => {
   }
 };
 
-// Content of trip class
+// Content of trip
 class Trip {
   constructor(city, country, longitude, lattitude, createdAt) {
     this.city = city;
@@ -46,15 +48,26 @@ class Trip {
     this.lattitude = lattitude;
     this.createdAt = createdAt;
   }
+
+// manage storage
+  remove() {
+    const arrayOfTrips = localStorage.getObjectItem('trips');
+    arrayOfTrips.forEach((trip, i) => {
+      if (trip.city === this.city) {
+        return arrayOfTrips.splice(i, 1);
+      }
+    });
+    localStorage.setObjectItem('trips', arrayOfTrips);
+  }
 };
 
 // Autocomplete dropdown menu: activates when user types initials of the city
 const generateResultsItems = (parent, value) => {
   if (!parent || !value) return;
   const fragment = new DocumentFragment();
-  getLocation(value).then((data) => {
+  fetchLocation(value).then((data) => {
     Object.values(data)[1].forEach((obj) => {
-      emptyList();
+      emptyListContainer();
       const resultItem = document.createElement('div');
       if (obj.name.substr(0, value.length).toLowerCase() === value.toLowerCase()) {
          resultItem.innerHTML = `<strong>${obj.name.substr(0, value.length)}</strong>${obj.name.substr(value.length)}, ${obj.countryName}`;
@@ -66,10 +79,10 @@ const generateResultsItems = (parent, value) => {
       resultItem.setAttribute('data-city', `${obj.name}`);
       resultItem.setAttribute('data-country', `${obj.countryName}`);
       resultItem.setAttribute('role', 'option');
-      resultItem.setAttribute('class', 'resultItem');
-      const pinPoint = document.createElement('img');
-      pinPoint.src = pinIcon;
-      resultItem.appendChild(pinPoint);
+      resultItem.setAttribute('class', 'result-item');
+      const pin = document.createElement('img');
+      pin.src = pinIcon;
+      resultItem.appendChild(pin);
       fragment.appendChild(resultItem);
     });
     parent.appendChild(fragment);
@@ -77,7 +90,7 @@ const generateResultsItems = (parent, value) => {
 };
 
 // empty list of autocomplete suggestions
-const emptyList = () => {
+const emptyListContainer = () => {
   const element = document.querySelector('.results');
   if (!element) return;
   element.childNodes.forEach((child) => {
@@ -86,7 +99,7 @@ const emptyList = () => {
 };
 
 // remove the autocomplete
-const removeListOfSuggestions = () => {
+const removeListContainer = () => {
   let element;
   if (document.querySelector('.results')) {
     element = document.querySelector('.results');
@@ -95,10 +108,10 @@ const removeListOfSuggestions = () => {
 };
 
 // Allow user to select from autocomplete suggestions
-const resultItemSelected = (event) => {
+const resultItemOnClick = (event) => {
   const { target } = event;
-  if (target.classList.contains('resultItem')) {
-    document.querySelector('#destinationInput').value = target.innerText;
+  if (target.classList.contains('result-item')) {
+    document.querySelector('#country-input').value = target.innerText;
     const element = target;
     const currentClick = new Date();
     const createdAt = currentClick.toGMTString();
@@ -112,20 +125,21 @@ const resultItemSelected = (event) => {
 
  // Save info to memory
     addTripToMemory(newTrip);
-    removeListOfSuggestions();
+    removeListContainer();
   }
 };
 
 // Autocomplete
+// inspired by: https://www.w3schools.com/howto/howto_js_autocomplete.asp
 const autocomplete = (inputElm) => {
-  document.querySelector('.destinationError').innerText = '';
+  document.querySelector('.country-input-error').innerText = '';
   let resultsContainer;
   const parent = inputElm.parentNode;
   const { value } = inputElm;
   const hasResultsContainer = !!document.querySelector('.results');
   if (!value && hasResultsContainer) {
-    emptyList();
-    removeListOfSuggestions();
+    emptyListContainer();
+    removeListContainer();
     return;
   }
   if (hasResultsContainer) {
@@ -134,9 +148,9 @@ const autocomplete = (inputElm) => {
     resultsContainer = document.createElement('div');
     resultsContainer.setAttribute('class', 'results');
     parent.appendChild(resultsContainer);
-    resultsContainer.addEventListener('click', resultItemSelected);
+    resultsContainer.addEventListener('click', resultItemOnClick);
     document.addEventListener('click', () => {
-      removeListOfSuggestions();
+      removeListContainer();
     });
   }
   generateResultsItems(resultsContainer, value);
@@ -148,17 +162,17 @@ const debounce = (func, timeout) => {
     timer = setTimeout(() => { func.apply(this, args); }, timeout);
   };
 };
-const countryInput = debounce((event) => {
+const countryInputHandler = debounce((event) => {
   autocomplete(event.target);
 }, 0);
 
 // Display input page overlay
-const displayInputOverlay = () => {
-  if (document.querySelector('.inputPage')) {
-    document.body.removeChild(document.querySelector('.inputPage'));
+const toggleOverlay = () => {
+  if (document.querySelector('.overlay')) {
+    document.body.removeChild(document.querySelector('.overlay'));
   } else {
     const overlay = document.createElement('div');
-    overlay.classList.add('inputPage');
+    overlay.classList.add('overlay');
     document.querySelector('body').appendChild(overlay);
   }
 };
@@ -166,65 +180,66 @@ const displayInputOverlay = () => {
 //Save trip and handle input errors
 const saveTrip = (e) => {
   e.preventDefault();
-  if (!document.querySelector('#destinationInput').value) {
-    document.querySelector('.destinationError').innerText = 'Please enter name of your destination';
+  if (!document.querySelector('#country-input').value) {
+    document.querySelector('.country-input-error').innerText = 'Please enter destination';
   } else if (document.querySelector('#date').value.length < 1) {
-    document.querySelector('.dateError').innerText = 'Please select date of yout travel';
+    document.querySelector('.date-input-error').innerText = 'Please select date of departure';
   } else {
     window.location.reload();
   }
 };
 
+
 // Create the input form on overlay page
 const inputForm = () => {
   const section = document.createElement('section');
-  section.classList.add('formContainer', 'container');
+  section.classList.add('form-wrapper', 'container');
   const form = document.createElement('form');
   form.setAttribute('action', '');
   form.setAttribute('autocomplete', 'off');
   form.classList.add('form');
   const inputContainer = document.createElement('div');
-  inputContainer.classList.add('inputContainer');
+  inputContainer.classList.add('input-container');
   inputContainer.addEventListener('input', (e) => {
-    countryInput(e);
+    countryInputHandler(e);
   });
 
   // Destination input
   const countryInput = document.createElement('input');
-    Object.assign(countryInput,
+  Object.assign(countryInput,
     {
-      className: 'userInput',
-      id: 'destinationInput',
+      className: 'user-input',
+      id: 'country-input',
       type: 'text',
       name: 'country',
-      placeholder: 'Enter your destination',
+      placeholder: 'Enter destination',
     });
 
   // Handle destination error
   const countryError = document.createElement('p');
-  countryError.setAttribute('class', 'destinationError error');
+  countryError.setAttribute('class', 'country-input-error error');
 
-  // Date picker
+ // Date picker
   const dateContainer = document.createElement('div');
   const datePicker = document.createElement('input');
-  datePicker.addEventListener('input', dateHandler);
+  datePicker.addEventListener('input', dateInputHandler);
   Object.assign(datePicker,
     {
       type: 'date',
-      className: 'userInput',
+      className: 'user-input',
       id: 'date',
     });
 
   // Handle date error
   const dateError = document.createElement('p');
-  dateError.setAttribute('class', 'dateError error');
+  dateError.setAttribute('class', 'date-input-error error');
   dateContainer.appendChild(dateError);
   dateContainer.appendChild(datePicker);
 
-  // Save button
+   // Save button
   const button = document.createElement('button');
-  button.setAttribute('class', 'submitBtn');
-  button.classList.add('formSubmit');
+  button.setAttribute('class', 'submit-btn');
+  button.classList.add('form__submit');
   button.innerText = 'Save';
   button.addEventListener('click', saveTrip);
 
@@ -233,14 +248,14 @@ const inputForm = () => {
 
   // Close button x
   const closeBtn = document.createElement('button');
-  closeBtn.setAttribute('class', 'closeBtn');
+  closeBtn.setAttribute('class', 'close-btn');
   closeBtn.innerText = 'x';
   closeBtn.addEventListener('click', () => {
-    displayInputOverlay();
-    document.body.removeChild(document.querySelector('.formContainer'));
+    toggleOverlay();
+    document.body.removeChild(document.querySelector('.form-wrapper'));
   });
 
-  // Form's main text
+// Form's main text
   const formHeader = document.createElement('h2');
   formHeader.innerText = 'Choose your destination and date of departure';
   form.appendChild(formHeader);

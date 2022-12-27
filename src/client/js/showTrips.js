@@ -1,6 +1,5 @@
 import inputForm from './Input';
 
-
 // Load trips from memory
 const retrieveTrips = () => {
   const trips = localStorage.getObjectItem('trips');
@@ -8,13 +7,14 @@ const retrieveTrips = () => {
 };
 
 //Fetch image data
-const getImage = async (trip) => {
+const fetchImageData = async (trip) => {
   const response = await fetch('/api/image', {
     method: 'POST',
     credentials: 'same-origin',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ trip }),
   });
+
   const data = await response.json();
   try {
     return data;
@@ -24,47 +24,44 @@ const getImage = async (trip) => {
 };
 
 // Trips carousel
-const createCarousel = (trip, i) => {
+const createSlideshowComponent = (trip, i) => {
   const card = document.createElement('div');
   card.setAttribute('class', 'card');
   const preview = document.createElement('img');
-  getImage(trip).then((result) => {
+  fetchImageData(trip).then((result) => {
     if (result.hits[0]) {
       Object.assign(preview, {
         src: `${result.hits[0].previewURL}`,
-        className: 'carouselCard',
-        alt: `image of ${trip.city}`,
+        className: 'card-preview',
+        alt: `an image of ${trip.city}`,
       });
     }
   });
-  preview.setAttribute('dataPreview', `${i}`);
+  preview.setAttribute('data-previewindex', `${i}`);
   card.appendChild(preview);
   return card;
 };
 
 // Toggle InputOverlay page for data input
-const displayInputOverlay = () => {
-  if (document.querySelector('.inputPage')) {
-    document.body.removeChild(document.querySelector('.inputPage'));
+const toggleOverlay = () => {
+  if (document.querySelector('.overlay')) {
+    document.body.removeChild(document.querySelector('.overlay'));
   } else {
     const overlay = document.createElement('div');
-    overlay.classList.add('inputPage');
+    overlay.classList.add('overlay');
     document.querySelector('body').appendChild(overlay);
   }
 };
 
-
 // Add trtip
 const addTrip = () => {
-  displayInputOverlay();
+  toggleOverlay();
   const form = inputForm();
   document.querySelector('body').appendChild(form);
 };
 
-
-
 // Calculate date
-const getDate = (trip) => {
+const getDepartureDate = (trip) => {
   const months = {
     '01': 'Jan',
     '02': 'Feb',
@@ -84,7 +81,7 @@ const getDate = (trip) => {
 };
 
 // calculate the number of days remaining to the start of a trip
-const daysToDeparture = ({ departure }) => {
+const daysCountdown = ({ departure }) => {
   const today = new Date().getTime();
   const departureDate = new Date(`${departure.month} ${departure.day}, ${departure.year}`).getTime();
   const interval = departureDate - today;
@@ -93,7 +90,7 @@ const daysToDeparture = ({ departure }) => {
 };
 
 // Get weather data
-const gethWeather = async (trip, days) => {
+const fetchWeather = async (trip, days) => {
   const response = await fetch('/api/weather', {
     method: 'POST',
     credentials: 'same-origin',
@@ -108,16 +105,13 @@ const gethWeather = async (trip, days) => {
   }
 };
 
-//
-
-
 // Create all trip elements 
-const createTripElements = (trip) => {
-  const daysCount = daysToDeparture(trip);
+const createTripComponent = (trip) => {
+  const daysCount = daysCountdown(trip);
   const tripContainer = document.createElement('div');
-  tripContainer.setAttribute('class', 'tripContainer');
-  const tripInfoContainer = document.createElement('div');
-  tripInfoContainer.setAttribute('class', 'tripInfoContainer');
+  tripContainer.setAttribute('class', 'trip-container');
+   const tripInfoContainer = document.createElement('div');
+   tripInfoContainer.setAttribute('class', 'tripInfoContainer');
   const countryText = document.createElement('h2');
   countryText.setAttribute('class', 'country');
   const cityText = document.createElement('h2');
@@ -125,39 +119,39 @@ const createTripElements = (trip) => {
   const departureDate = document.createElement('h3');
   departureDate.setAttribute('class', 'departure');
   const countDown = document.createElement('h3');
-  countDown.setAttribute('class', 'timeToDeparture text');
+  countDown.setAttribute('class', 'countDown-text text');
   const weatherContainer = document.createElement('div');
-  weatherContainer.setAttribute('class', 'weatherContainer');
+  weatherContainer.setAttribute('class', 'weather-container');
   const temp = document.createElement('p');
   temp.setAttribute('class', 'temp');
-  const weatherData = document.createElement('p');
-  weatherData.setAttribute('class', 'weatherText');
-  const infoContainer = document.createElement('div');
-  infoContainer.setAttribute('class', 'info');
-  const destination = document.createElement('h2');
-  destination.setAttribute('class', 'destinationInfo');
-  const date = document.createElement('h3');
-  date.setAttribute('class', 'dateInfo');
+  const weatherDesc = document.createElement('p');
+  weatherDesc.setAttribute('class', 'weather-desc');
 
-  // Get and show a background image
-  getImage(trip).then((result) => {
+   // Get and show a background image
+  fetchImageData(trip).then((result) => {
     if (result.hits[0]) {
-      tripContainer.style.backgroundImage = `url(${result.hits[0].largeImageURL})`;
+      tripContainer.style.backgroundImage = `linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)),url(${result.hits[0].largeImageURL})`;
     }
   });
 
   // Get and show weather
-  gethWeather(trip, daysCount).then((res) => {
+  fetchWeather(trip, daysCount).then((res) => {
     temp.innerText = `${res.data[0].temp} °C`;
-    weatherData.innerText = `${res.data[0].weather.description}`;
+    weatherDesc.innerText = `${res.data[0].weather.description}`;
     weatherContainer.appendChild(temp);
-    weatherContainer.appendChild(weatherData);
+    weatherContainer.appendChild(weatherDesc);
   });
 
-  //Show trip information 
+    //Show trip information 
+  const infoContainer = document.createElement('div');
+  infoContainer.setAttribute('class', 'info');
+  const destination = document.createElement('h2');
+  destination.setAttribute('class', 'info__destination-container');
+  const date = document.createElement('h3');
+  date.setAttribute('class', 'info__date-container');
   countryText.innerText = `${trip.country}`;
   cityText.innerText = `${trip.city}`;
-  departureDate.innerText = `Departing on ${getDate(trip)}`;
+  departureDate.innerText = `Departing on ${getDepartureDate(trip)}`;
   countDown.innerText = `${daysCount} days left to your trip`;
   destination.appendChild(cityText);
   destination.appendChild(countryText);
@@ -170,16 +164,15 @@ const createTripElements = (trip) => {
   wrapper.appendChild(tripInfoContainer);
   tripInfoContainer.appendChild(infoContainer);
   tripInfoContainer.appendChild(weatherContainer);
-  tripContainer.appendChild(wrapper);
 
-  // Create an Add New Trip button for adding more trip plans
+// Create an Add New Trip button for adding more trip plans
   const newTrip = document.createElement('button');
-  newTrip.innerText = '+ Add Another Trip';
-  newTrip.classList.add('newTripBtn');
+  newTrip.innerText = '+ Add New Trip';
+  newTrip.classList.add('newBtn', 'new-trip-btn');
   newTrip.addEventListener('click', addTrip)
   tripInfoContainer.appendChild(newTrip);
+  tripContainer.appendChild(wrapper);
   
-
   return tripContainer;
 };
 
@@ -201,22 +194,22 @@ const showTrips = () => {
 
   // Create trips info and a card for each added trip
   tripsArr.forEach((trip, i) => {
-    const carouselSlides = createCarousel(trip, i);
-    cardsContainer.appendChild(carouselSlides);
-    const tripContainer = createTripElements(trip);
+    const slideShowComponent = createSlideshowComponent(trip, i);
+    cardsContainer.appendChild(slideShowComponent);
+    const tripContainer = createTripComponent(trip);
     container.appendChild(tripContainer);
   });
 
-  // Show trips one by one
+// Show trips one by one
   let tripIndex = 0;
   let previews;
   const showTrip = (index) => {
-    const trips = document.querySelectorAll('.tripContainer');
+    const trips = document.querySelectorAll('.trip-container');
     if (index > trips.length - 1) tripIndex = 0;
     if (index < 0) tripIndex = trips.length - 1;
     setTimeout(() => {
-      if (document.querySelectorAll('.cardPreveiw').length > 1) return;
-      previews = document.querySelectorAll('.carouselCard');
+      if (document.querySelectorAll('.card-preveiw').length > 1) return;
+      previews = document.querySelectorAll('.card-preview');
       previews.forEach((preview) => {
         preview.classList.remove('active');
       });
@@ -230,7 +223,7 @@ const showTrips = () => {
 
   // Go back and forth between trips in memory
   showTrip(tripIndex);
-  const nextTrip = (n) => {
+  const moveTrip = (n) => {
     showTrip(tripIndex += n);
   };
 
@@ -241,26 +234,26 @@ const showTrips = () => {
 
   // next and prev buttons for navigation between trips
   const nextTripButton = document.createElement('button');
-  nextTripButton.setAttribute('class', 'nextTripBtn btn');
+  nextTripButton.setAttribute('class', 'next-trip-btn btn');
   nextTripButton.innerHTML = '&#10095;';
   const prevTripButton = document.createElement('button');
-  prevTripButton.setAttribute('class', 'nextTripBtn btn');
+  prevTripButton.setAttribute('class', 'next-trip-btn btn');
   prevTripButton.innerHTML = '&#10094;';
   nextTripButton.addEventListener('click', () => {
-    nextTrip(1);
+    moveTrip(1);
   });
   prevTripButton.addEventListener('click', () => {
-    nextTrip(-1);
+    moveTrip(-1);
   });
 
-// Navigation between trips through cards
+  // Navigation between trips through cards
   cardsContainer.addEventListener('click', (e) => {
     if (e.target.nodeName === 'IMG') {
       activePreview(parseInt(e.target.dataset.previewindex));
     }
   });
   const tripsNavigation = document.createElement('div');
-  tripsNavigation.setAttribute('class', 'tripsNav');
+  tripsNavigation.setAttribute('class', 'trips-navigation');
   tripsNavigation.appendChild(prevTripButton);
   tripsNavigation.appendChild(nextTripButton);
   container.appendChild(tripsNavigation);

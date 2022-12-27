@@ -1,26 +1,22 @@
 import inputForm from './Input';
 
-
-
 // Display trip input page on activation
-const displayInputOverlay = () => {
-  if (document.querySelector('.inputPage')) {
-    document.body.removeChild(document.querySelector('.inputPage'));
+const toggleOverlay = () => {
+  if (document.querySelector('.overlay')) {
+    document.body.removeChild(document.querySelector('.overlay'));
   } else {
     const overlay = document.createElement('div');
-    overlay.classList.add('inputPage');
+    overlay.classList.add('overlay');
     document.querySelector('body').appendChild(overlay);
   }
 };
 
-
 // Add trtip
 const addTrip = () => {
-  displayInputOverlay();
+  toggleOverlay();
   const form = inputForm();
   document.querySelector('body').appendChild(form);
 };
-
 
 // App function to run the addTrip function
 const app = () => {
