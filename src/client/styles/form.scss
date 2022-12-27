@@ -1,4 +1,4 @@
-.formContainer {
+.form-wrapper {
     background-color: #000000;
     position: absolute;
     z-index: 5;
@@ -23,7 +23,7 @@
         font-size: 1.5rem;
 }
 
-.userInput {
+.user-input {
 	width: 25vw;
     padding: 0.7em;
     border: none;
@@ -47,7 +47,7 @@
     }
 }
 
-.resultItem {
+.result-item {
     padding: 0.5em;
     display: flex;
     align-items: center;
@@ -64,7 +64,7 @@
     }
 }
 
-.submitBtn {
+.submit-btn {
     font-size: 2rem;
     font-weight: 700;
     margin-top: 1.3rem;
@@ -80,7 +80,7 @@
     }
 }
 
-.closeBtn {
+.close-btn {
     font-family: 'Montserrat';
     font-weight: 100;
     position: absolute;

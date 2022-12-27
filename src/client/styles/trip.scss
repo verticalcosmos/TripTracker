@@ -1,4 +1,4 @@
-.tripContainer {
+.trip-container {
     height: 100vh;
     background-position: center center;
     background-repeat: no-repeat;
@@ -13,7 +13,6 @@
 .wrapper {
     height: 100vh;
     display: flex;
-    background-color: blue;
     background: linear-gradient(90deg, rgba(0,0,0,1) 0%, rgba(0,0,0,0.4962359943977591) 50%, rgba(0,0,0,0) 100%);
     -webkit-animation-name: slide;
     -webkit-animation-duration: 1.2s;
@@ -50,7 +49,7 @@
 
 
 // weather
-.weatherContainer {
+.weather-container {
     margin-top: 50px;
     display: flex;
     flex-direction: column;
@@ -63,7 +62,7 @@
     font-size: 5rem;
 }
 
-.weatherText {
+.weather-desc {
     font-size: 2rem !important;
 }
 
@@ -82,10 +81,6 @@
         height: auto;
         margin: 0;
     }
-}
-
-.destinationInfo {
-    display: flex;
 }
 
 .country {
@@ -109,14 +104,14 @@
 
 }
 
-.timeToDeparture {
+.countDown-text {
     font-weight: 100 !important;
     font-size: 1em !important;
 }
 
-.newTripBtn {
+.newBtn {
     margin-top: 5vh;
-    width: 12em;
+    width: 10em;
     font-size: 1em;
     font-weight: bold;
     border-radius: 2em;
@@ -132,7 +127,7 @@
 
 
 
-.tripsNav {
+.trips-navigation {
     display: flex;
     gap: 90vw;
     position: absolute;
@@ -163,7 +158,7 @@
     .card {
         // margin-right: 3em;
         cursor: pointer;
-        .carouselCard {
+        .card-preview {
             width: 100px;
             height: 100px;
             opacity: 0.5;
