@@ -3,8 +3,6 @@ const webpack = require('webpack');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const WorkboxPlugin = require('workbox-webpack-plugin');
-//const { merge } = require('webpack-merge');
-//const common = require('./webpack.common');
 
 module.exports = {
   entry: {
