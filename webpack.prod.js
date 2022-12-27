@@ -1,12 +1,13 @@
-const HtmlWebpackPlugin = require('html-webpack-plugin');
+const path = require('path');
+const webpack = require('webpack');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const CssMinimizerPlugin = require('css-minimizer-webpack-plugin');
-const webpack = require('webpack');
-const path = require('path');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 const WorkboxPlugin = require('workbox-webpack-plugin');
+//const { merge } = require('webpack-merge');
+//const common = require('./webpack.common');
 
 module.exports = {
-  mode: 'production',
   entry: {
     trips: './src/client/index.js',
   },
@@ -15,6 +16,7 @@ module.exports = {
     path: path.resolve(__dirname, 'dist'),
     assetModuleFilename: 'img/[name][ext]',
   },
+  mode: 'production',
   module: {
     rules: [
       {
@@ -37,7 +39,7 @@ module.exports = {
         type: 'asset/resource',
         generator: {
         },
-      }
+      },
     ],
   },
   plugins: [
@@ -59,8 +61,7 @@ module.exports = {
       new CssMinimizerPlugin(),
     ],
   },
-};
-
+}
 
 
 

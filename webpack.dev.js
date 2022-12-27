@@ -1,25 +1,25 @@
-const HtmlWebpackPlugin = require('html-webpack-plugin');
+const path = require('path');
 const webpack = require('webpack');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
-const path = require('path');
-const { merge } = require('webpack-merge');
-const common = require('./webpack.common');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 const WorkboxPlugin = require('workbox-webpack-plugin');
+//const { merge } = require('webpack-merge');
+//const common = require('./webpack.common');
 
 module.exports = {
+  entry: {
+    trips: './src/client/index.js',
+  },
+  output: {
+    filename: '[name].bundle.js',
+    path: path.resolve(__dirname, 'dist'),
+    assetModuleFilename: 'img/[name][ext]',
+  },
   mode: 'development',
   devtool: 'source-map',
   devServer: {
     proxy: {
       '/api': 'http://localhost:8080',
-    },
-    entry: {
-      trips: './src/client/index.js',
-    },
-    output: {
-      filename: '[name].bundle.js',
-      path: path.resolve(__dirname, 'dist'),
-      assetModuleFilename: 'img/[name][ext]',
     },
    
     contentBase: path.resolve(__dirname, './src/client'),
@@ -51,7 +51,7 @@ module.exports = {
         type: 'asset/resource',
         generator: {
         },
-      }
+      },
     ],
   },
   plugins: [
@@ -71,6 +71,7 @@ module.exports = {
       clientsClaim: true,
       skipWaiting: true,
     }),
-  ],
-};
+  ]
+}
+
 
