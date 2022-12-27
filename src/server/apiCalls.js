@@ -1,9 +1,8 @@
 const fetch = require('node-fetch');
 
-
 // Get data from APIs
 
-const getLocation = async (val, key) => {
+const geonames = async (val, key) => {
   const options = `maxRows=5&fuzzy=1&username=${key}`;
   const response = await fetch(`http://api.geonames.org/searchJSON?q=&name_startsWith=${val}&${options}`);
   const data = await response.json();
@@ -14,7 +13,7 @@ const getLocation = async (val, key) => {
   }
 };
 
-const getImage = async (trip, key) => {
+const fetchImage = async (trip, key) => {
   const city = trip.city.toLowerCase();
   const apiKey = key;
   const options = 'image_type=photo&pretty=true&safesearch=true';
@@ -27,11 +26,11 @@ const getImage = async (trip, key) => {
   }
 };
 
-const gethWeather = async (trip, days, key) => {
+const fetchWeather = async (trip, days, key) => {
   const baseUrl = 'http://api.weatherbit.io/v2.0';
   const lat = trip.lattitude;
   const lon = trip.longitude;
-   if (days <= 7) {
+  if (days <= 7) {
     const response = await fetch(`${baseUrl}/current?lat=${lat}&lon=${lon}&key=${key}`);
     const result = await response.json();
     try {
@@ -51,7 +50,7 @@ const gethWeather = async (trip, days, key) => {
 };
 
 module.exports = {
-  getLocation,
-  getImage,
-  gethWeather,
+  geonames,
+  fetchImage,
+  fetchWeather,
 };
