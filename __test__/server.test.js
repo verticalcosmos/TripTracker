@@ -2,7 +2,7 @@ const supertest = require('supertest');
 const app = require('../src/server/app.js');
 
 describe('Connect to server', () => {
-    test('it sould respond with a success msg', async () => {
+    test('a success message should be received', async () => {
         const response = await supertest(app)
             .get('/test')
             .set('Accept', 'application/json')
