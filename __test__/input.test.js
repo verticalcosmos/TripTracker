@@ -1,4 +1,4 @@
-import Trip from '../src/client/js/input'
+import Trip from '../src/client/js/tripModel.js'
 
 describe('Trip model', () => {
     it('A trip instance should be created', () => {
